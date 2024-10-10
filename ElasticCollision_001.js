@@ -97,7 +97,7 @@
     var z0 = 0;
     var x1 = 0;
     var y1 = 0;
-    var x2 = 50;
+    var x2 = 40;
     var y2 = 30;
     var xcm = 0;
     var ycm = 0;
@@ -107,8 +107,8 @@
     var z0 = 0;
 
     var v10 = 0;
-    var v10x = 20;
-    var v10y = 12;
+    var v10x = 26.67;
+    var v10y = 20;
     var v20 = 0;
     var v20x = 0;
     var v20y = 0;
@@ -301,10 +301,18 @@
       arr_v2.pos = vec(p2.pos.x, p2.pos.y, z0);
       arr_v2.axis = vec(v2x, v2y, z0);
       arr_v2.length = abs(vFac * v2);
+      txt_x1.text = x1;
+      txt_y1.text = y1;
+      txt_x2.text = x2;
+      txt_y2.text = y2;
       txt_u1x.text = v1x;
       txt_u1y.text = v1y;
       txt_u2x.text = v2x;
       txt_u2y.text = v2y;
+      txt_v1x.text = v1x;
+      txt_v1y.text = v1y;
+      txt_v2x.text = v2x;
+      txt_v2y.text = v2y;
     }
     function bwd() {
       bStop = false;
@@ -335,41 +343,29 @@
       var dist = sqrt(dx * dx + dy * dy);
 
       if (dist < d) {
-        run = p1.pos.x - p2.pos.x;
-        rise = p1.pos.y - p2.pos.y;
-        theta = atan2(rise, run);
-        cosTheta = cos(theta);
-        sinTheta = sin(theta);
-        vx1Prime = v1x * cosTheta + v1y * sinTheta;
-        vx2Prime = v2x * cosTheta + v2y * sinTheta;
-        vy1Prime = v1y * cosTheta - v1x * sinTheta;
-        vy2Prime = v2y * cosTheta - v2x * sinTheta;
-        p = m1 * vx1Prime + m2 * vx2Prime;
-        v = vx1Prime - vx2Prime;
-        v2f = (p + m1 * v) / (m1 + m2);
-        v1f = v2f - vx1Prime + vx2Prime;
-        vx1Prime = v1f;
-        vx2Prime = v2f;
-        vx1 = vx1Prime * cosTheta - vy1Prime * sinTheta;
-        vx2 = vx2Prime * cosTheta - vy2Prime * sinTheta;
-        vy1 = vy1Prime * cosTheta + vx1Prime * sinTheta;
-        vy2 = vy2Prime * cosTheta + vx2Prime * sinTheta;
-        p1.pos.x = p2.pos.x + cosTheta * d;
-        p1.pos.y = p2.pos.y + sinTheta * d;
+        // Bevegelsesmengde i x og y-kompenent
+        var bevegMeng_x = m1 * v1x + m2 * v2x;
+        var bevegMeng_y = m1 * v1y + m2 * v2y;
 
-        v1x = vx1;
-        v1y = vy1;
-        v2x = vx2;
-        v2y = vy2;
-        v1 = sqrt(v1x * v1x + v1y * v1y);
-        v2 = sqrt(v2x * v2x + v2y * v2y);
+        // Fart rett etter kollisjon
+        var fartRettEtter_x = bevegMeng_x / (m1 + m2);
+        var fartRettEtter_y = bevegMeng_y / (m1 + m2);
 
+        // Siden kulene henger sammen, vil fartsvektorene ha samme x og y kompenenter
+        v1x = v2x = fartRettEtter_x;
+        v1y = v2y = fartRettEtter_y;
+
+        // Place p1 and p2 at the point of collision
+        var theta = atan2(dy, dx);
+        p1.pos.x = p2.pos.x + cos(theta) * d;
+        p1.pos.y = p2.pos.y + sin(theta) * d;
+
+        // Lagrer verdier rett etter kollisjon
         txt_u1x.text = v1x;
         txt_u1y.text = v1y;
         txt_u2x.text = v2x;
         txt_u2y.text = v2y;
       }
-      //txt_t.text = dist
     }
     /*----------------------------------------------------------------------------------------------------------------------------- sim ---*/
 
@@ -413,6 +409,18 @@
       arr_v2.pos = vec(p2.pos.x, p2.pos.y, z0);
       arr_v2.axis = vec(v2x, v2y, z0);
       arr_v2.length = abs(vFac * Math.hypot(v2x, v2y));
+
+      // Display new speed components
+      txt_v1x.text = v1x;
+      txt_v1y.text = v1y;
+      txt_v2x.text = v2x;
+      txt_v2y.text = v2y;
+
+      // Display new position components
+      txt_x1.text = p1.pos.x;
+      txt_y1.text = p1.pos.y;
+      txt_x2.text = p2.pos.x;
+      txt_y2.text = p2.pos.y;
     }
     /*.............................................................................................................................. run ...*/
 
